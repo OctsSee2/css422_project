@@ -1,0 +1,156 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    2 00000000                 THUMB
+    3 00000000         
+    4 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5 00000000         ; System Call Table
+    6 00000000 20007B00 
+                       SYSTEMCALLTBL
+                               EQU              0x20007B00  ; originally 0x2000
+                                                            7500
+    7 00000000 00000000 
+                       SYS_EXIT
+                               EQU              0x0         ; address 20007B00
+    8 00000000 00000001 
+                       SYS_ALARM
+                               EQU              0x1         ; address 20007B04
+    9 00000000 00000002 
+                       SYS_SIGNAL
+                               EQU              0x2         ; address 20007B08
+   10 00000000 00000003 
+                       SYS_MEMCPY
+                               EQU              0x3         ; address 20007B0C
+   11 00000000 00000004 
+                       SYS_MALLOC
+                               EQU              0x4         ; address 20007B10
+   12 00000000 00000005 
+                       SYS_FREE
+                               EQU              0x5         ; address 20007B14
+   13 00000000         
+   14 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   15 00000000         ; System Call Table Initialization
+   16 00000000                 EXPORT           _syscall_table_init
+   17 00000000         _syscall_table_init
+   18 00000000         ;; Implement by yourself
+   19 00000000         
+   20 00000000 46F7            MOV              pc, lr
+   21 00000002         
+   22 00000002         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   23 00000002         ; System Call Table Jump Routine
+   24 00000002                 EXPORT           _syscall_table_jump
+   25 00000002         _syscall_table_jump
+   26 00000002         ;; Implement by yourself
+   27 00000002         
+   28 00000002 46F7            MOV              pc, lr
+   29 00000004         
+   30 00000004                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\svc.d -o.\objects\svc.o -I.\RTE\_Target_1 -IC:\Use
+rs\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\Users\
+llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --pred
+efine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefine="TM4
+C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\svc.lst svc.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 1 in file svc.s
+   Uses
+      None
+Comment: .text unused
+_syscall_table_init 00000000
+
+Symbol: _syscall_table_init
+   Definitions
+      At line 17 in file svc.s
+   Uses
+      At line 16 in file svc.s
+Comment: _syscall_table_init used once
+_syscall_table_jump 00000002
+
+Symbol: _syscall_table_jump
+   Definitions
+      At line 25 in file svc.s
+   Uses
+      At line 24 in file svc.s
+Comment: _syscall_table_jump used once
+3 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+SYSTEMCALLTBL 20007B00
+
+Symbol: SYSTEMCALLTBL
+   Definitions
+      At line 6 in file svc.s
+   Uses
+      None
+Comment: SYSTEMCALLTBL unused
+SYS_ALARM 00000001
+
+Symbol: SYS_ALARM
+   Definitions
+      At line 8 in file svc.s
+   Uses
+      None
+Comment: SYS_ALARM unused
+SYS_EXIT 00000000
+
+Symbol: SYS_EXIT
+   Definitions
+      At line 7 in file svc.s
+   Uses
+      None
+Comment: SYS_EXIT unused
+SYS_FREE 00000005
+
+Symbol: SYS_FREE
+   Definitions
+      At line 12 in file svc.s
+   Uses
+      None
+Comment: SYS_FREE unused
+SYS_MALLOC 00000004
+
+Symbol: SYS_MALLOC
+   Definitions
+      At line 11 in file svc.s
+   Uses
+      None
+Comment: SYS_MALLOC unused
+SYS_MEMCPY 00000003
+
+Symbol: SYS_MEMCPY
+   Definitions
+      At line 10 in file svc.s
+   Uses
+      None
+Comment: SYS_MEMCPY unused
+SYS_SIGNAL 00000002
+
+Symbol: SYS_SIGNAL
+   Definitions
+      At line 9 in file svc.s
+   Uses
+      None
+Comment: SYS_SIGNAL unused
+7 symbols
+345 symbols in table

@@ -25,33 +25,34 @@
 ;//-------- <<< Use Configuration Wizard in Context Menu >>> ------------------
 ;*/
 
-
-; <h> Stack Configuration
-;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
-; </h>
-
-Stack_Size      EQU     0x00000200
-
-                AREA    STACK, NOINIT, READWRITE, ALIGN=3
-Stack_Mem       SPACE   Stack_Size
-__initial_sp
-
-
 ; <h> Heap Configuration
 ;   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
 ; </h>
 
-Heap_Size       EQU     0x00000000
+Heap_Size       EQU     0x00005000
 
                 AREA    HEAP, NOINIT, READWRITE, ALIGN=3
 __heap_base
 Heap_Mem        SPACE   Heap_Size
 __heap_limit
 
+; <h> Stack Configuration
+;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
+; </h>
+
+Handler_Stack_Size      EQU     0x00000800
+Thread_Stack_Size	EQU	0x00000800	
+
+                AREA    STACK, NOINIT, READWRITE, ALIGN=3
+
+Thread_Stack_Mem		SPACE	Thread_Stack_Size
+__initial_user_sp
+Handler_Stack_Mem       SPACE   Handler_Stack_Size
+__initial_sp
+
 
                 PRESERVE8
                 THUMB
-
 
 ; Vector Table Mapped to Address 0 at Reset
 
@@ -204,13 +205,24 @@ __Vectors_Size  EQU     __Vectors_End - __Vectors
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
                 IMPORT  SystemInit
-                IMPORT  __main
+        	IMPORT  __main
+	
+		; Store __initial_sp into MSP (Step 1 toward Midpoint Report)
+
+		ISB     ; Let's leave as is from the original.
                 LDR     R0, =SystemInit
-                BLX     R0
+        	BLX     R0
+
+		; Initialize the system call table (Step 2)
+		; Initialize the heap space (Step 2)
+		; Initialize the SysTick timer (Step 2)
+	
+		; Store __initial_user_sp into PSP (Step 1 toward Midpoint Report)
+		; Change CPU mode into unprivileged thread mode using PSP
+
                 LDR     R0, =__main
                 BX      R0
                 ENDP
-
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
 
@@ -238,8 +250,12 @@ UsageFault_Handler\
                 EXPORT  UsageFault_Handler        [WEAK]
                 B       .
                 ENDP
-SVC_Handler     PROC
-                EXPORT  SVC_Handler               [WEAK]
+SVC_Handler     PROC 		; (Step 2)
+        	EXPORT  SVC_Handler               [WEAK]
+		; Save registers 
+		; Invoke _syscall_table_ump
+		; Retrieve registers
+		; Go back to stdlib.s
                 B       .
                 ENDP
 DebugMon_Handler\
@@ -253,8 +269,13 @@ PendSV_Handler\
                 B       .
                 ENDP
 SysTick_Handler\
-                PROC
-                EXPORT  SysTick_Handler           [WEAK]
+                PROC		; (Step 2)
+        	EXPORT  SysTick_Handler           [WEAK]
+		; Save registers
+		; Invoke _timer_update
+		; Retrieve registers
+		; Change from MSP to PSP
+		; Go back to the user program
                 B       .
                 ENDP
 
@@ -992,7 +1013,7 @@ GPIOT_Handler\
 
                 IF      :DEF:__MICROLIB
 
-                EXPORT  __initial_sp
+                EXPORT  __initial_user_sp
                 EXPORT  __heap_base
                 EXPORT  __heap_limit
 
@@ -1003,9 +1024,9 @@ GPIOT_Handler\
 __user_initial_stackheap
 
                 LDR     R0, =  Heap_Mem
-                LDR     R1, =(Stack_Mem + Stack_Size)
+                LDR     R1, =(Thread_Stack_Mem + Thread_Stack_Size)
                 LDR     R2, = (Heap_Mem +  Heap_Size)
-                LDR     R3, = Stack_Mem
+                LDR     R3, = Thread_Stack_Mem
                 BX      LR
 
                 ALIGN

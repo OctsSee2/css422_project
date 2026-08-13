@@ -11,6 +11,7 @@
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pArmCC>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pArmCC>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -393,6 +394,21 @@
               <FileName>driver_keil.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\driver_keil.c</FilePath>
+            </File>
+            <File>
+              <FileName>svc.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\svc.s</FilePath>
+            </File>
+            <File>
+              <FileName>timer.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\timer.s</FilePath>
+            </File>
+            <File>
+              <FileName>heap.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\heap.s</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,0 +1,208 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    2 00000000                 THUMB
+    3 00000000         
+    4 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5 00000000         ; System Call Table
+    6 00000000 20001000 
+                       HEAP_TOP
+                               EQU              0x20001000
+    7 00000000 20004FE0 
+                       HEAP_BOT
+                               EQU              0x20004FE0
+    8 00000000 00004000 
+                       MAX_SIZE
+                               EQU              0x00004000  ; 16KB = 2^14
+    9 00000000 00000020 
+                       MIN_SIZE
+                               EQU              0x00000020  ; 32B  = 2^5
+   10 00000000         
+   11 00000000 20006800 
+                       MCB_TOP EQU              0x20006800  ; 2^10B = 1K Space
+   12 00000000 20006BFE 
+                       MCB_BOT EQU              0x20006BFE
+   13 00000000 00000002 
+                       MCB_ENT_SZ
+                               EQU              0x00000002  ; 2B per entry
+   14 00000000 00000200 
+                       MCB_TOTAL
+                               EQU              512         ; 2^9 = 512 entries
+                                                            
+   15 00000000         
+   16 00000000 FFFFFFFF 
+                       INVALID EQU              -1          ; an invalid id
+   17 00000000         
+   18 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   19 00000000         ; Memory Control Block Initialization
+   20 00000000                 EXPORT           _heap_init
+   21 00000000         _heap_init
+   22 00000000         ;; Implement by yourself
+   23 00000000         
+   24 00000000 46F7            MOV              pc, lr
+   25 00000002         
+   26 00000002         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   27 00000002         ; Kernel Memory Allocation
+   28 00000002         ; void* _k_alloc( int size )
+   29 00000002                 EXPORT           _kalloc
+   30 00000002         _kalloc
+   31 00000002         ;; Implement by yourself
+   32 00000002 46F7            MOV              pc, lr
+   33 00000004         
+   34 00000004         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   35 00000004         ; Kernel Memory De-allocation
+   36 00000004         ; void free( void *ptr )
+   37 00000004                 EXPORT           _kfree
+   38 00000004         _kfree
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   39 00000004         ;; Implement by yourself
+   40 00000004 46F7            MOV              pc, lr      ; return from rfree
+                                                            ( )
+   41 00000006         
+   42 00000006                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\heap.d -o.\objects\heap.o -I.\RTE\_Target_1 -IC:\U
+sers\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\User
+s\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --pr
+edefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefine="T
+M4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\heap.lst heap
+.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 1 in file heap.s
+   Uses
+      None
+Comment: .text unused
+_heap_init 00000000
+
+Symbol: _heap_init
+   Definitions
+      At line 21 in file heap.s
+   Uses
+      At line 20 in file heap.s
+Comment: _heap_init used once
+_kalloc 00000002
+
+Symbol: _kalloc
+   Definitions
+      At line 30 in file heap.s
+   Uses
+      At line 29 in file heap.s
+Comment: _kalloc used once
+_kfree 00000004
+
+Symbol: _kfree
+   Definitions
+      At line 38 in file heap.s
+   Uses
+      At line 37 in file heap.s
+Comment: _kfree used once
+4 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+HEAP_BOT 20004FE0
+
+Symbol: HEAP_BOT
+   Definitions
+      At line 7 in file heap.s
+   Uses
+      None
+Comment: HEAP_BOT unused
+HEAP_TOP 20001000
+
+Symbol: HEAP_TOP
+   Definitions
+      At line 6 in file heap.s
+   Uses
+      None
+Comment: HEAP_TOP unused
+INVALID FFFFFFFF
+
+Symbol: INVALID
+   Definitions
+      At line 16 in file heap.s
+   Uses
+      None
+Comment: INVALID unused
+MAX_SIZE 00004000
+
+Symbol: MAX_SIZE
+   Definitions
+      At line 8 in file heap.s
+   Uses
+      None
+Comment: MAX_SIZE unused
+MCB_BOT 20006BFE
+
+Symbol: MCB_BOT
+   Definitions
+      At line 12 in file heap.s
+   Uses
+      None
+Comment: MCB_BOT unused
+MCB_ENT_SZ 00000002
+
+Symbol: MCB_ENT_SZ
+   Definitions
+      At line 13 in file heap.s
+   Uses
+      None
+Comment: MCB_ENT_SZ unused
+MCB_TOP 20006800
+
+Symbol: MCB_TOP
+   Definitions
+      At line 11 in file heap.s
+   Uses
+      None
+Comment: MCB_TOP unused
+MCB_TOTAL 00000200
+
+Symbol: MCB_TOTAL
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 14 in file heap.s
+   Uses
+      None
+Comment: MCB_TOTAL unused
+MIN_SIZE 00000020
+
+Symbol: MIN_SIZE
+   Definitions
+      At line 9 in file heap.s
+   Uses
+      None
+Comment: MIN_SIZE unused
+9 symbols
+348 symbols in table

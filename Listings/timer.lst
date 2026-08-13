@@ -1,0 +1,259 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    2 00000000                 THUMB
+    3 00000000         
+    4 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5 00000000         ; System Timer Definition
+    6 00000000 E000E010 
+                       STCTRL  EQU              0xE000E010  ; SysTick Control a
+                                                            nd Status Register
+    7 00000000 E000E014 
+                       STRELOAD
+                               EQU              0xE000E014  ; SysTick Reload Va
+                                                            lue Register
+    8 00000000 E000E018 
+                       STCURRENT
+                               EQU              0xE000E018  ; SysTick Current V
+                                                            alue Register
+    9 00000000         
+   10 00000000 00000004 
+                       STCTRL_STOP
+                               EQU              0x00000004  ; Bit 2 (CLK_SRC) =
+                                                             1, Bit 1 (INT_EN) 
+                                                            = 0, Bit 0 (ENABLE)
+                                                             = 0
+   11 00000000 00000007 
+                       STCTRL_GO
+                               EQU              0x00000007  ; Bit 2 (CLK_SRC) =
+                                                             1, Bit 1 (INT_EN) 
+                                                            = 1, Bit 0 (ENABLE)
+                                                             = 1
+   12 00000000 00FFFFFF 
+                       STRELOAD_MX
+                               EQU              0x00FFFFFF  ; MAX Value = 1/16M
+                                                            Hz * 16M = 1 second
+                                                            
+   13 00000000 00000000 
+                       STCURR_CLR
+                               EQU              0x00000000  ; Clear STCURRENT a
+                                                            nd STCTRL.COUNT 
+   14 00000000 0000000E 
+                       SIGALRM EQU              14          ; sig alarm
+   15 00000000         
+   16 00000000         ; System Variables
+   17 00000000 20007B80 
+                       SECOND_LEFT
+                               EQU              0x20007B80  ; Secounds left for
+                                                             alarm( )
+   18 00000000 20007B84 
+                       USR_HANDLER
+                               EQU              0x20007B84  ; Address of a user
+                                                            -given signal handl
+                                                            er function 
+   19 00000000         
+   20 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   21 00000000         ; Timer initialization
+   22 00000000         ; void timer_init( )
+   23 00000000                 EXPORT           _timer_init
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   24 00000000         _timer_init
+   25 00000000         ;; Implement by yourself
+   26 00000000         
+   27 00000000 46F7            MOV              pc, lr      ; return to Reset_H
+                                                            andler
+   28 00000002         
+   29 00000002         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   30 00000002         ; Timer start
+   31 00000002         ; int timer_start( int seconds )
+   32 00000002                 EXPORT           _timer_start
+   33 00000002         _timer_start
+   34 00000002         ;; Implement by yourself
+   35 00000002         
+   36 00000002 46F7            MOV              pc, lr      ; return to SVC_Han
+                                                            dler
+   37 00000004         
+   38 00000004         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   39 00000004         ; Timer update
+   40 00000004         ; void timer_update( )
+   41 00000004                 EXPORT           _timer_update
+   42 00000004         _timer_update
+   43 00000004         ;; Implement by yourself
+   44 00000004         
+   45 00000004 46F7            MOV              pc, lr      ; return to SysTick
+                                                            _Handler
+   46 00000006         
+   47 00000006         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   48 00000006         ; Timer update
+   49 00000006         ; void* signal_handler( int signum, void* handler )
+   50 00000006                 EXPORT           _signal_handler
+   51 00000006         _signal_handler
+   52 00000006         ;; Implement by yourself
+   53 00000006         
+   54 00000006 46F7            MOV              pc, lr      ; return to Reset_H
+                                                            andler
+   55 00000008         
+   56 00000008                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\timer.d -o.\objects\timer.o -I.\RTE\_Target_1 -IC:
+\Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\Us
+ers\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 --
+predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefine=
+"TM4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\timer.lst t
+imer.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 1 in file timer.s
+   Uses
+      None
+Comment: .text unused
+_signal_handler 00000006
+
+Symbol: _signal_handler
+   Definitions
+      At line 51 in file timer.s
+   Uses
+      At line 50 in file timer.s
+Comment: _signal_handler used once
+_timer_init 00000000
+
+Symbol: _timer_init
+   Definitions
+      At line 24 in file timer.s
+   Uses
+      At line 23 in file timer.s
+Comment: _timer_init used once
+_timer_start 00000002
+
+Symbol: _timer_start
+   Definitions
+      At line 33 in file timer.s
+   Uses
+      At line 32 in file timer.s
+Comment: _timer_start used once
+_timer_update 00000004
+
+Symbol: _timer_update
+   Definitions
+      At line 42 in file timer.s
+   Uses
+      At line 41 in file timer.s
+Comment: _timer_update used once
+5 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+SECOND_LEFT 20007B80
+
+Symbol: SECOND_LEFT
+   Definitions
+      At line 17 in file timer.s
+   Uses
+      None
+Comment: SECOND_LEFT unused
+SIGALRM 0000000E
+
+Symbol: SIGALRM
+   Definitions
+      At line 14 in file timer.s
+   Uses
+      None
+Comment: SIGALRM unused
+STCTRL E000E010
+
+Symbol: STCTRL
+   Definitions
+      At line 6 in file timer.s
+   Uses
+      None
+Comment: STCTRL unused
+STCTRL_GO 00000007
+
+Symbol: STCTRL_GO
+   Definitions
+      At line 11 in file timer.s
+   Uses
+      None
+Comment: STCTRL_GO unused
+STCTRL_STOP 00000004
+
+Symbol: STCTRL_STOP
+   Definitions
+      At line 10 in file timer.s
+   Uses
+      None
+Comment: STCTRL_STOP unused
+STCURRENT E000E018
+
+Symbol: STCURRENT
+   Definitions
+      At line 8 in file timer.s
+   Uses
+      None
+Comment: STCURRENT unused
+STCURR_CLR 00000000
+
+Symbol: STCURR_CLR
+   Definitions
+      At line 13 in file timer.s
+   Uses
+      None
+Comment: STCURR_CLR unused
+STRELOAD E000E014
+
+Symbol: STRELOAD
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 7 in file timer.s
+   Uses
+      None
+Comment: STRELOAD unused
+STRELOAD_MX 00FFFFFF
+
+Symbol: STRELOAD_MX
+   Definitions
+      At line 12 in file timer.s
+   Uses
+      None
+Comment: STRELOAD_MX unused
+USR_HANDLER 20007B84
+
+Symbol: USR_HANDLER
+   Definitions
+      At line 18 in file timer.s
+   Uses
+      None
+Comment: USR_HANDLER unused
+10 symbols
+350 symbols in table
