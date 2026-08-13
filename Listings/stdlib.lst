@@ -1,0 +1,192 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             |.text|, CODE, READONLY, ALIGN=
+2
+    2 00000000                 THUMB
+    3 00000000         
+    4 00000000         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5 00000000         ; void _bzero( void *s, int n )
+    6 00000000         ; Parameters
+    7 00000000         ; s   - pointer to the memory location to zero-initializ
+                       e
+    8 00000000         ; n  - a number of bytes to zero-initialize
+    9 00000000         ; Return value
+   10 00000000         ;   none
+   11 00000000                 EXPORT           _bzero
+   12 00000000         _bzero
+   13 00000000         ; implement your complete logic, including stack operati
+                       ons
+   14 00000000 46F7            MOV              pc, lr
+   15 00000002         
+   16 00000002         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   17 00000002         ; char* _strncpy( char* dest, char* src, int size )
+   18 00000002         ; Parameters
+   19 00000002         ;    dest  - pointer to the buffer to copy to
+   20 00000002         ; src - pointer to the zero-terminated string to copy fr
+                       om
+   21 00000002         ; size - a total of n bytes
+   22 00000002         ; Return value
+   23 00000002         ;   dest
+   24 00000002                 EXPORT           _strncpy
+   25 00000002         _strncpy
+   26 00000002         ; implement your complete logic, including stack operati
+                       ons
+   27 00000002 46F7            MOV              pc, lr
+   28 00000004         
+   29 00000004         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   30 00000004         ; void* _malloc( int size )
+   31 00000004         ; Parameters
+   32 00000004         ; size - #bytes to allocate
+   33 00000004         ; Return value
+   34 00000004         ;    void* a pointer to the allocated space
+   35 00000004                 EXPORT           _malloc
+   36 00000004         _malloc
+   37 00000004         ; save registers
+   38 00000004         ; set the system call # to R7
+   39 00000004 DF00            SVC              #0x0
+   40 00000006         ; resume registers
+   41 00000006 46F7            MOV              pc, lr
+   42 00000008         
+   43 00000008         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   44 00000008         ; void _free( void* addr )
+   45 00000008         ; Parameters
+   46 00000008         ; size - the address of a space to deallocate
+   47 00000008         ; Return value
+   48 00000008         ;    none
+   49 00000008                 EXPORT           _free
+   50 00000008         _free
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   51 00000008         ; save registers
+   52 00000008         ; set the system call # to R7
+   53 00000008 DF00            SVC              #0x0
+   54 0000000A         ; resume registers
+   55 0000000A 46F7            MOV              pc, lr
+   56 0000000C         
+   57 0000000C         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   58 0000000C         ; unsigned int _alarm( unsigned int seconds )
+   59 0000000C         ; Parameters
+   60 0000000C         ;   seconds - seconds when a SIGALRM signal should be de
+                       livered to the calling program 
+   61 0000000C         ; Return value
+   62 0000000C         ;   unsigned int - the number of seconds remaining until
+                        any previously scheduled alarm
+   63 0000000C         ;                  was due to be delivered, or zero if t
+                       here was no previously schedul-
+   64 0000000C         ;                  ed alarm. 
+   65 0000000C                 EXPORT           _alarm
+   66 0000000C         _alarm
+   67 0000000C         ; save registers
+   68 0000000C         ; set the system call # to R7
+   69 0000000C DF00            SVC              #0x0
+   70 0000000E         ; resume registers 
+   71 0000000E 46F7            MOV              pc, lr
+   72 00000010         
+   73 00000010         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   74 00000010         ; void* _signal( int signum, void *handler )
+   75 00000010         ; Parameters
+   76 00000010         ;   signum - a signal number (assumed to be 14 = SIGALRM
+                       )
+   77 00000010         ;   handler - a pointer to a user-level signal handling 
+                       function
+   78 00000010         ; Return value
+   79 00000010         ;   void*   - a pointer to the user-level signal handlin
+                       g function previously handled
+   80 00000010         ;             (the same as the 2nd parameter in this pro
+                       ject)
+   81 00000010                 EXPORT           _signal
+   82 00000010         _signal
+   83 00000010         ; save registers
+   84 00000010         ; set the system call # to R7
+   85 00000010 DF00            SVC              #0x0
+   86 00000012         ; resume registers
+   87 00000012 46F7            MOV              pc, lr
+   88 00000014         
+   89 00000014         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   90 00000014                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\stdlib.d -o.\objects\stdlib.o -I.\RTE\_Target_1 -I
+C:\Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\
+Users\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 
+--predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefin
+e="TM4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\stdlib.ls
+t stdlib.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+.text 00000000
+
+Symbol: .text
+   Definitions
+      At line 1 in file stdlib.s
+   Uses
+      None
+Comment: .text unused
+_alarm 0000000C
+
+Symbol: _alarm
+   Definitions
+      At line 66 in file stdlib.s
+   Uses
+      At line 65 in file stdlib.s
+Comment: _alarm used once
+_bzero 00000000
+
+Symbol: _bzero
+   Definitions
+      At line 12 in file stdlib.s
+   Uses
+      At line 11 in file stdlib.s
+Comment: _bzero used once
+_free 00000008
+
+Symbol: _free
+   Definitions
+      At line 50 in file stdlib.s
+   Uses
+      At line 49 in file stdlib.s
+Comment: _free used once
+_malloc 00000004
+
+Symbol: _malloc
+   Definitions
+      At line 36 in file stdlib.s
+   Uses
+      At line 35 in file stdlib.s
+Comment: _malloc used once
+_signal 00000010
+
+Symbol: _signal
+   Definitions
+      At line 82 in file stdlib.s
+   Uses
+      At line 81 in file stdlib.s
+Comment: _signal used once
+_strncpy 00000002
+
+Symbol: _strncpy
+   Definitions
+      At line 25 in file stdlib.s
+   Uses
+      At line 24 in file stdlib.s
+Comment: _strncpy used once
+7 symbols
+342 symbols in table
