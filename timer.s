@@ -81,7 +81,7 @@ _timer_update
 		LDR		R1, =0x20007b84			; write memory address of the function into R1
 		LDR		R2, [R1]				; load its value
 		CMP		R2, #0
-		BLXNE	R2						; branch to it if its not zero
+		BLXNE	R2						; branch to it if its not zero (save return address)
 _timer_update_done
 		MOV		pc, lr		; return to SysTick_Handler
 
