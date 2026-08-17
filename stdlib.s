@@ -66,9 +66,12 @@ _free
 _alarm
 		; save registers
 		; set the system call # to R7
-        	SVC     #0x0
+		PUSH	{R7, LR}
+		MOV		R7, #1
+		SVC     #0x0
+		POP		{R7, LR}
 		; resume registers	
-		MOV		pc, lr		
+		MOV		pc, lr	
 			
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; void* _signal( int signum, void *handler )
@@ -82,7 +85,7 @@ _alarm
 _signal
 		; save registers
 		; set the system call # to R7
-        	SVC     #0x0
+		SVC     #0x0
 		; resume registers
 		MOV		pc, lr	
 
