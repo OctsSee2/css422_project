@@ -65,12 +65,12 @@ _free
 		EXPORT	_alarm
 _alarm
 		; save registers
-		; set the system call # to R7
 		PUSH	{R7, LR}
-		MOV		R7, #1
+		; set the system call # to R7
+		MOV		R7, #0x1
 		SVC     #0x0
-		POP		{R7, LR}
 		; resume registers	
+		POP		{R7, LR}
 		MOV		pc, lr	
 			
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -84,9 +84,12 @@ _alarm
 		EXPORT	_signal
 _signal
 		; save registers
+		PUSH	{R7, LR}
 		; set the system call # to R7
+		MOV		R7, #0x2
 		SVC     #0x0
 		; resume registers
+		POP		{R7, LR}
 		MOV		pc, lr	
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

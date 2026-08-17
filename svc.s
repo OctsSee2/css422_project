@@ -14,14 +14,20 @@ SYS_FREE		EQU		0x5		; address 20007B14
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 		IMPORT _timer_start
+		IMPORT _signal_handler
 
 ; System Call Table Initialization
 		EXPORT	_syscall_table_init
 _syscall_table_init
 		; alarm
-		LDR		R0, =0x20007b04		; write intended system call memory address for `alarm()` into R0
-		LDR		R1, =_timer_start	; write memory address to `_timer_start` into R1
-		STR		R1, [R0]			; write `_timer_start`'s memory address to 0x2007b04
+		LDR		R0, =0x20007b04			; write intended system call memory address for `alarm()` into R0
+		LDR		R1, =_timer_start		; write memory address to `_timer_start` into R1
+		STR		R1, [R0]				; write `_timer_start`'s memory address to 0x2007b04
+
+		; signal
+		LDR		R0, =0x2007b08			; write intended system call memory address for `signal()` into R0
+		LDR		R1, =_signal_handler	; write memory address to `_signal_handler` into R1
+		STR		R1, [R0]
 
 		; TODO: add the others
 		MOV		pc, lr
@@ -33,18 +39,15 @@ _syscall_table_jump
 		; each address is separated by 4 bytes + syscall number is stored in R7 
 		; 	-> use `LSL <some-register>, R7, #0x2` to translate it into the 
 		;      proper jump offset from the jump table start memory address (at 0x20007b00)
+		LSL		R0, R7, #0x2			; calculate the jump offset using R7 * 4 and store it into R0
+		LDR		R1, =0x20007b00			; write start memory address for the jump table into R1
+		ADD		R1, R1, R0				; increment R1's value by the jump offset amt
 		
-		; alarm
-		LSL		R0, R7, #0x2		; calculate the jump offset using R7 * 4 and store it into R0
-		LDR		R1, =0x20007b00		; write start memory address for the jump table into R1
-		ADD		R1, R1, R0			; increment R1's value by the jump offset amt
-		LDR		R2, [R1]			; write the value stored at the offsetted memory address (should be `alarm()`) into R2
+		LDR		R2, [R1]				; write the value stored at the offsetted memory address (should be `alarm()`) into R2
 		CMP		R2, #0x0
-		BXNE	R2					; branch to the function at that memory address if its not zero (don't save return address)
-	
-		; TODO: add the others
-		MOV		pc, lr
-		
+		BXNE	R2						; branch to the function at that memory address if its not zero (don't save return address)
+
+		MOV		pc, lr		
 		END
 
 

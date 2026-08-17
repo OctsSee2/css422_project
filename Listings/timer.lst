@@ -71,7 +71,7 @@ ARM Macro Assembler    Page 2
 
    24 00000000         _timer_init
    25 00000000         ; stop SysTick
-   26 00000000 4912            LDR              R1, =0xe000e010 ; write memory 
+   26 00000000 4915            LDR              R1, =0xe000e010 ; write memory 
                                                             address of the SYST
                                                             _CSR into R1
    27 00000002 F04F 0204       MOV              R2, #0x4    ; write 0x4 to R2 (
@@ -83,7 +83,7 @@ ARM Macro Assembler    Page 2
                                                             ST_CSR
    29 00000008         
    30 00000008         ; load max. value to SYST_RVR
-   31 00000008 4911            LDR              R1, =0xe000e014 ; write the mem
+   31 00000008 4914            LDR              R1, =0xe000e014 ; write the mem
                                                             ory address of the 
                                                             SYST_RVR into R1
    32 0000000A F06F 427F       MOV              R2, #0x00ffffff
@@ -102,7 +102,7 @@ ARM Macro Assembler    Page 2
    41 00000012         _timer_start
    42 00000012         ; save current `seconds` value for return
    43 00000012         ; and write the new `seconds` argument
-   44 00000012 4910            LDR              R1, =0x20007b80 ; write *curren
+   44 00000012 4913            LDR              R1, =0x20007b80 ; write *curren
                                                             t* `seconds` value 
                                                             location into R1
    45 00000014 680A            LDR              R2, [R1]    ; write R1's value 
@@ -120,7 +120,7 @@ ARM Macro Assembler    Page 2
                                                             rn value
    48 0000001A         
    49 0000001A         ; enable SysTick
-   50 0000001A 490C            LDR              R1, =0xe000e010 ; write memory 
+   50 0000001A 490F            LDR              R1, =0xe000e010 ; write memory 
                                                             address of the SYST
                                                             _CSR into R1
    51 0000001C F04F 0207       MOV              R2, #0x7    ; write 0x7 to R2 (
@@ -137,7 +137,7 @@ ARM Macro Assembler    Page 3
                                                             ST_CSR
    53 00000022         
    54 00000022         ; clear SYST_CVR
-   55 00000022 490D            LDR              R1, =0xe000e018 ; write memory 
+   55 00000022 4910            LDR              R1, =0xe000e018 ; write memory 
                                                             address of the SYST
                                                             _CVR into R1
    56 00000024 F04F 0200       MOV              R2, #0x0    ; write zero into R
@@ -156,7 +156,7 @@ ARM Macro Assembler    Page 3
    64 0000002C                 EXPORT           _timer_update
    65 0000002C         _timer_update
    66 0000002C         ; decrement `seconds`
-   67 0000002C 4909            LDR              R1, =0x20007b80 ; read remainin
+   67 0000002C 490C            LDR              R1, =0x20007b80 ; read remainin
                                                             g `seconds` value
    68 0000002E 680A            LDR              R2, [R1]
    69 00000030 1E52            SUBS             R2, R2, #1  ; decrement it by 1
@@ -173,7 +173,7 @@ ARM Macro Assembler    Page 3
    73 00000036         
    74 00000036         ; continue here if `seconds` **is** zero (it is done)
    75 00000036         ; stop SysTick
-   76 00000036 4905            LDR              R1, =0xe000e010 ; write memory 
+   76 00000036 4908            LDR              R1, =0xe000e010 ; write memory 
                                                             address of the SYST
                                                             _CSR into R1
    77 00000038 F04F 0204       MOV              R2, #0x4    ; write 0x4 to R2 (
@@ -185,7 +185,7 @@ ARM Macro Assembler    Page 3
                                                             ST_CSR
    79 0000003E         
    80 0000003E         ; invoke a function
-   81 0000003E 4907            LDR              R1, =0x20007b84 ; write memory 
+   81 0000003E 490A            LDR              R1, =0x20007b84 ; write memory 
                                                             address of the func
                                                             tion into R1
    82 00000040 680A            LDR              R2, [R1]    ; load its value
@@ -209,13 +209,33 @@ ARM Macro Assembler    Page 4
    90 0000004A         ; void* signal_handler( int signum, void* handler )
    91 0000004A                 EXPORT           _signal_handler
    92 0000004A         _signal_handler
-   93 0000004A         ;; Implement by yourself
-   94 0000004A         
-   95 0000004A 46F7            MOV              pc, lr      ; return to Reset_H
-                                                            andler
-   96 0000004C         
-   97 0000004C                 END
-              E000E010 
+   93 0000004A 280E            CMP              R0, #0xe    ; check if R0's val
+                                                            ue (first arg) is 1
+                                                            4
+   94 0000004C D102            BNE              _signal_handler_done 
+                                                            ; skip if not
+   95 0000004E         
+   96 0000004E 4A06            LDR              R2, =0x20007b84 ; write memory 
+                                                            address of the sign
+                                                            al callback functio
+                                                            n memory address in
+                                                            to R2
+   97 00000050 6810            LDR              R0, [R2]    ; write the previou
+                                                            s memory address in
+                                                            to R0 to be returne
+                                                            d
+   98 00000052 6011            STR              R1, [R2]    ; write R1's value 
+                                                            (second arg) into t
+                                                            he memory address o
+                                                            f the signal callba
+                                                            ck function memory 
+                                                            address
+   99 00000054         
+  100 00000054         _signal_handler_done
+  101 00000054 46F7            MOV              pc, lr      ; return to Reset_H
+                                                            andler  
+  102 00000056                 END
+              00 00 E000E010 
               E000E014 
               20007B80 
               E000E018 
@@ -249,6 +269,14 @@ Symbol: _signal_handler
    Uses
       At line 91 in file timer.s
 Comment: _signal_handler used once
+_signal_handler_done 00000054
+
+Symbol: _signal_handler_done
+   Definitions
+      At line 100 in file timer.s
+   Uses
+      At line 94 in file timer.s
+Comment: _signal_handler_done used once
 _timer_init 00000000
 
 Symbol: _timer_init
@@ -281,7 +309,7 @@ Symbol: _timer_update_done
    Uses
       At line 72 in file timer.s
 Comment: _timer_update_done used once
-6 symbols
+7 symbols
 
 
 
@@ -375,4 +403,4 @@ Symbol: USR_HANDLER
       None
 Comment: USR_HANDLER unused
 10 symbols
-353 symbols in table
+354 symbols in table

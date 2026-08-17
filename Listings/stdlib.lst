@@ -90,12 +90,12 @@ ARM Macro Assembler    Page 2
    65 0000000C                 EXPORT           _alarm
    66 0000000C         _alarm
    67 0000000C         ; save registers
-   68 0000000C         ; set the system call # to R7
-   69 0000000C B580            PUSH             {R7, LR}
-   70 0000000E F04F 0701       MOV              R7, #1
+   68 0000000C B580            PUSH             {R7, LR}
+   69 0000000E         ; set the system call # to R7
+   70 0000000E F04F 0701       MOV              R7, #0x1
    71 00000012 DF00            SVC              #0x0
-   72 00000014 E8BD 4080       POP              {R7, LR}
-   73 00000018         ; resume registers 
+   72 00000014         ; resume registers 
+   73 00000014 E8BD 4080       POP              {R7, LR}
    74 00000018 46F7            MOV              pc, lr
    75 0000001A         
    76 0000001A         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -114,26 +114,29 @@ ARM Macro Assembler    Page 2
    84 0000001A                 EXPORT           _signal
    85 0000001A         _signal
    86 0000001A         ; save registers
-   87 0000001A         ; set the system call # to R7
-   88 0000001A DF00            SVC              #0x0
-   89 0000001C         ; resume registers
-   90 0000001C 46F7            MOV              pc, lr
-   91 0000001E         
-   92 0000001E         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   87 0000001A B580            PUSH             {R7, LR}
+   88 0000001C         ; set the system call # to R7
+   89 0000001C F04F 0702       MOV              R7, #0x2
+   90 00000020 DF00            SVC              #0x0
+   91 00000022         ; resume registers
+   92 00000022 E8BD 4080       POP              {R7, LR}
+   93 00000026 46F7            MOV              pc, lr
+   94 00000028         
+   95 00000028         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   93 0000001E                 END
+   96 00000028                 END
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
 interwork --depend=.\objects\stdlib.d -o.\objects\stdlib.o -I.\RTE\_Target_1 -I
 C:\Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\
-Users\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 
---predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefin
-e="TM4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\stdlib.ls
 
 
 
 ARM Macro Assembler    Page 3 
 
 
+Users\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 
+--predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefin
+e="TM4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\stdlib.ls
 t stdlib.s
 
 

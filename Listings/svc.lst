@@ -38,72 +38,83 @@ ARM Macro Assembler    Page 1
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
    15 00000000         
    16 00000000                 IMPORT           _timer_start
-   17 00000000         
-   18 00000000         ; System Call Table Initialization
-   19 00000000                 EXPORT           _syscall_table_init
-   20 00000000         _syscall_table_init
-   21 00000000         ; alarm
-   22 00000000 4806            LDR              R0, =0x20007b04 ; write intende
+   17 00000000                 IMPORT           _signal_handler
+   18 00000000         
+   19 00000000         ; System Call Table Initialization
+   20 00000000                 EXPORT           _syscall_table_init
+   21 00000000         _syscall_table_init
+   22 00000000         ; alarm
+   23 00000000 4807            LDR              R0, =0x20007b04 ; write intende
                                                             d system call memor
                                                             y address for `alar
                                                             m()` into R0
-   23 00000002 4907            LDR              R1, =_timer_start ; write memor
+   24 00000002 4908            LDR              R1, =_timer_start ; write memor
                                                             y address to `_time
                                                             r_start` into R1
-   24 00000004 6001            STR              R1, [R0]    ; write `_timer_sta
+   25 00000004 6001            STR              R1, [R0]    ; write `_timer_sta
                                                             rt`'s memory addres
                                                             s to 0x2007b04
-   25 00000006         
-   26 00000006         ; TODO: add the others
-   27 00000006 46F7            MOV              pc, lr
-   28 00000008         
-   29 00000008         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   30 00000008         ; System Call Table Jump Routine
-   31 00000008                 EXPORT           _syscall_table_jump
-   32 00000008         _syscall_table_jump
-   33 00000008         ; each address is separated by 4 bytes + syscall number 
+   26 00000006         
+   27 00000006         ; signal
+   28 00000006 4808            LDR              R0, =0x2007b08 ; write intended
+                                                             system call memory
+                                                             address for `signa
+                                                            l()` into R0
+   29 00000008 4908            LDR              R1, =_signal_handler ; write me
+                                                            mory address to `_s
+                                                            ignal_handler` into
 
 
 
 ARM Macro Assembler    Page 2 
 
 
+                                                             R1
+   30 0000000A 6001            STR              R1, [R0]
+   31 0000000C         
+   32 0000000C         ; TODO: add the others
+   33 0000000C 46F7            MOV              pc, lr
+   34 0000000E         
+   35 0000000E         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   36 0000000E         ; System Call Table Jump Routine
+   37 0000000E                 EXPORT           _syscall_table_jump
+   38 0000000E         _syscall_table_jump
+   39 0000000E         ; each address is separated by 4 bytes + syscall number 
                        is stored in R7 
-   34 00000008         ;  -> use `LSL <some-register>, R7, #0x2` to translate i
+   40 0000000E         ;  -> use `LSL <some-register>, R7, #0x2` to translate i
                        t into the 
-   35 00000008         ;      proper jump offset from the jump table start memo
+   41 0000000E         ;      proper jump offset from the jump table start memo
                        ry address (at 0x20007b00)
-   36 00000008         
-   37 00000008         ; alarm
-   38 00000008 EA4F 0087       LSL              R0, R7, #0x2 ; calculate the ju
+   42 0000000E EA4F 0087       LSL              R0, R7, #0x2 ; calculate the ju
                                                             mp offset using R7 
                                                             * 4 and store it in
                                                             to R0
-   39 0000000C 4905            LDR              R1, =0x20007b00 ; write start m
+   43 00000012 4907            LDR              R1, =0x20007b00 ; write start m
                                                             emory address for t
                                                             he jump table into 
                                                             R1
-   40 0000000E 4401            ADD              R1, R1, R0  ; increment R1's va
+   44 00000014 4401            ADD              R1, R1, R0  ; increment R1's va
                                                             lue by the jump off
                                                             set amt
-   41 00000010 680A            LDR              R2, [R1]    ; write the value s
+   45 00000016         
+   46 00000016 680A            LDR              R2, [R1]    ; write the value s
                                                             tored at the offset
                                                             ted memory address 
                                                             (should be `alarm()
                                                             `) into R2
-   42 00000012 2A00            CMP              R2, #0x0
-   43 00000014 BF18 4710       BXNE             R2          ; branch to the fun
+   47 00000018 2A00            CMP              R2, #0x0
+   48 0000001A BF18 4710       BXNE             R2          ; branch to the fun
                                                             ction at that memor
                                                             y address if its no
                                                             t zero (don't save 
                                                             return address)
-   44 00000018         
-   45 00000018         ; TODO: add the others
-   46 00000018 46F7            MOV              pc, lr
-   47 0000001A         
-   48 0000001A                 END
-              00 00 20007B04 
+   49 0000001E         
+   50 0000001E 46F7            MOV              pc, lr
+   51 00000020                 END
+              20007B04 
+              00000000 
+              02007B08 
               00000000 
               20007B00 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
@@ -130,17 +141,17 @@ _syscall_table_init 00000000
 
 Symbol: _syscall_table_init
    Definitions
-      At line 20 in file svc.s
+      At line 21 in file svc.s
    Uses
-      At line 19 in file svc.s
+      At line 20 in file svc.s
 Comment: _syscall_table_init used once
-_syscall_table_jump 00000008
+_syscall_table_jump 0000000E
 
 Symbol: _syscall_table_jump
    Definitions
-      At line 32 in file svc.s
+      At line 38 in file svc.s
    Uses
-      At line 31 in file svc.s
+      At line 37 in file svc.s
 Comment: _syscall_table_jump used once
 3 symbols
 
@@ -212,13 +223,21 @@ Comment: SYS_SIGNAL unused
 ARM Macro Assembler    Page 1 Alphabetic symbol ordering
 External symbols
 
+_signal_handler 00000000
+
+Symbol: _signal_handler
+   Definitions
+      At line 17 in file svc.s
+   Uses
+      At line 29 in file svc.s
+Comment: _signal_handler used once
 _timer_start 00000000
 
 Symbol: _timer_start
    Definitions
       At line 16 in file svc.s
    Uses
-      At line 23 in file svc.s
+      At line 24 in file svc.s
 Comment: _timer_start used once
-1 symbol
-348 symbols in table
+2 symbols
+349 symbols in table

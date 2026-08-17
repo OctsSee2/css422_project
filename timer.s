@@ -90,8 +90,13 @@ _timer_update_done
 ; void* signal_handler( int signum, void* handler )
 	    EXPORT	_signal_handler
 _signal_handler
-	;; Implement by yourself
-	
-		MOV		pc, lr		; return to Reset_Handler
+		CMP		R0, #0xe				; check if R0's value (first arg) is 14
+		BNE		_signal_handler_done	; skip if not
 		
+		LDR		R2, =0x20007b84			; write memory address of the signal callback function memory address into R2
+		LDR		R0, [R2]				; write the previous memory address into R0 to be returned
+		STR		R1, [R2]				; write R1's value (second arg) into the memory address of the signal callback function memory address
+
+_signal_handler_done
+		MOV		pc, lr					; return to Reset_Handler		
 		END		
