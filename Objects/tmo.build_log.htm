@@ -28,21 +28,12 @@ Project File Date:  08/13/2026
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Users\llgoj\AppData\Local\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin'
 Build target 'Target_1'
 assembling svc.s...
-svc.s(20): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-svc.s(28): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-assembling timer.s...
-timer.s(27): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-timer.s(36): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-timer.s(45): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-timer.s(54): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-assembling heap.s...
-heap.s(24): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-heap.s(32): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-heap.s(40): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
-assembling startup_TM4C129.s...
+svc.s(27): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
+svc.s(46): warning: A1608W: MOV pc,<rn> instruction used, but BX <rn> is preferred
+svc.s(48): warning: A1581W: Added 2 bytes of padding at address 0x1a
 linking...
-Program Size: Code=1112 RO-data=544 RW-data=8 ZI-data=24672  
-".\Objects\tmo.axf" - 0 Error(s), 9 Warning(s).
+Program Size: Code=1068 RO-data=544 RW-data=8 ZI-data=24672  
+".\Objects\tmo.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -68,9 +59,9 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE@5.6.0
 
    * Component: Keil::Device:Startup@1.0.0
-      Source file:   Device/Source/system_TM4C129.c
       Source file:   Device/Source/ARM/startup_TM4C129.s
       Include file:  Device/Include/TM4C129/TM4C129.h
+      Source file:   Device/Source/system_TM4C129.c
 Build Time Elapsed:  00:00:00
 </pre>
 </body>

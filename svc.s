@@ -19,7 +19,7 @@ SYS_FREE		EQU		0x5		; address 20007B14
 		EXPORT	_syscall_table_init
 _syscall_table_init
 		; alarm
-		LDR		R0, -0x20007b04		; write intended system call memory address for `alarm()` into R0
+		LDR		R0, =0x20007b04		; write intended system call memory address for `alarm()` into R0
 		LDR		R1, =_timer_start	; write memory address to `_timer_start` into R1
 		STR		R1, [R0]			; write `_timer_start`'s memory address to 0x2007b04
 

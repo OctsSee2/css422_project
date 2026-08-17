@@ -70,45 +70,156 @@ ARM Macro Assembler    Page 2
 
 
    24 00000000         _timer_init
-   25 00000000         ;; Implement by yourself
-   26 00000000         
-   27 00000000 46F7            MOV              pc, lr      ; return to Reset_H
+   25 00000000         ; stop SysTick
+   26 00000000 4912            LDR              R1, =0xe000e010 ; write memory 
+                                                            address of the SYST
+                                                            _CSR into R1
+   27 00000002 F04F 0204       MOV              R2, #0x4    ; write 0x4 to R2 (
+                                                            100 -> lowest 2 bit
+                                                            s zeroed, 3rd bit s
+                                                            et)
+   28 00000006 600A            STR              R2, [R1]    ; write R2 (current
+                                                            ly 0x4) into the SY
+                                                            ST_CSR
+   29 00000008         
+   30 00000008         ; load max. value to SYST_RVR
+   31 00000008 4911            LDR              R1, =0xe000e014 ; write the mem
+                                                            ory address of the 
+                                                            SYST_RVR into R1
+   32 0000000A F06F 427F       MOV              R2, #0x00ffffff
+   33 0000000E 600A            STR              R2, [R1]    ; write the value `
+                                                            0x00ffffff` into th
+                                                            e SYST_RVR
+   34 00000010         
+   35 00000010 46F7            MOV              pc, lr      ; return to Reset_H
                                                             andler
-   28 00000002         
-   29 00000002         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   36 00000012         
+   37 00000012         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   30 00000002         ; Timer start
-   31 00000002         ; int timer_start( int seconds )
-   32 00000002                 EXPORT           _timer_start
-   33 00000002         _timer_start
-   34 00000002         ;; Implement by yourself
-   35 00000002         
-   36 00000002 46F7            MOV              pc, lr      ; return to SVC_Han
+   38 00000012         ; Timer start
+   39 00000012         ; int timer_start( int seconds )
+   40 00000012                 EXPORT           _timer_start
+   41 00000012         _timer_start
+   42 00000012         ; save current `seconds` value for return
+   43 00000012         ; and write the new `seconds` argument
+   44 00000012 4910            LDR              R1, =0x20007b80 ; write *curren
+                                                            t* `seconds` value 
+                                                            location into R1
+   45 00000014 680A            LDR              R2, [R1]    ; write R1's value 
+                                                            (*current* `seconds
+                                                            ` value) into R2 (t
+                                                            o return later in R
+                                                            0)
+   46 00000016 6008            STR              R0, [R1]    ; write *new* `seco
+                                                            nds` value from R0 
+                                                            into the memory loc
+                                                            ation pointed to by
+                                                             R1
+   47 00000018 4610            MOV              R0, R2      ; write R2's value 
+                                                            into R0 as the retu
+                                                            rn value
+   48 0000001A         
+   49 0000001A         ; enable SysTick
+   50 0000001A 490C            LDR              R1, =0xe000e010 ; write memory 
+                                                            address of the SYST
+                                                            _CSR into R1
+   51 0000001C F04F 0207       MOV              R2, #0x7    ; write 0x7 to R2 (
+                                                            111 -> lowest 3 bit
+                                                            s set)
+   52 00000020 600A            STR              R2, [R1]    ; write R2 (current
+                                                            ly 0x7) into the SY
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+                                                            ST_CSR
+   53 00000022         
+   54 00000022         ; clear SYST_CVR
+   55 00000022 490D            LDR              R1, =0xe000e018 ; write memory 
+                                                            address of the SYST
+                                                            _CVR into R1
+   56 00000024 F04F 0200       MOV              R2, #0x0    ; write zero into R
+                                                            2
+   57 00000028 600A            STR              R2, [R1]    ; write R2 (current
+                                                            ly zero) into the S
+                                                            YST_CVR addr
+   58 0000002A         
+   59 0000002A 46F7            MOV              pc, lr      ; return to SVC_Han
                                                             dler
-   37 00000004         
-   38 00000004         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   60 0000002C         
+   61 0000002C         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   39 00000004         ; Timer update
-   40 00000004         ; void timer_update( )
-   41 00000004                 EXPORT           _timer_update
-   42 00000004         _timer_update
-   43 00000004         ;; Implement by yourself
-   44 00000004         
-   45 00000004 46F7            MOV              pc, lr      ; return to SysTick
+   62 0000002C         ; Timer update
+   63 0000002C         ; void timer_update( )
+   64 0000002C                 EXPORT           _timer_update
+   65 0000002C         _timer_update
+   66 0000002C         ; decrement `seconds`
+   67 0000002C 4909            LDR              R1, =0x20007b80 ; read remainin
+                                                            g `seconds` value
+   68 0000002E 680A            LDR              R2, [R1]
+   69 00000030 1E52            SUBS             R2, R2, #1  ; decrement it by 1
+                                                             second (updating f
+                                                            lags to check if ze
+                                                            ro)
+   70 00000032 600A            STR              R2, [R1]    ; save the decremen
+                                                            ted value back into
+                                                             `seconds`
+   71 00000034         
+   72 00000034 D108            BNE              _timer_update_done ; branch to 
+                                                            exit if `seconds` i
+                                                            s **not** zero
+   73 00000036         
+   74 00000036         ; continue here if `seconds` **is** zero (it is done)
+   75 00000036         ; stop SysTick
+   76 00000036 4905            LDR              R1, =0xe000e010 ; write memory 
+                                                            address of the SYST
+                                                            _CSR into R1
+   77 00000038 F04F 0204       MOV              R2, #0x4    ; write 0x4 to R2 (
+                                                            100 -> lowest 2 bit
+                                                            s zeroed, 3rd bit s
+                                                            et)
+   78 0000003C 600A            STR              R2, [R1]    ; write R2 (current
+                                                            ly 0x4) into the SY
+                                                            ST_CSR
+   79 0000003E         
+   80 0000003E         ; invoke a function
+   81 0000003E 4907            LDR              R1, =0x20007b84 ; write memory 
+                                                            address of the func
+                                                            tion into R1
+   82 00000040 680A            LDR              R2, [R1]    ; load its value
+   83 00000042 2A00            CMP              R2, #0
+   84 00000044 BF18 4790       BLXNE            R2          ; branch to it if i
+                                                            ts not zero (save r
+                                                            eturn address)
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+   85 00000048         _timer_update_done
+   86 00000048 46F7            MOV              pc, lr      ; return to SysTick
                                                             _Handler
-   46 00000006         
-   47 00000006         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   87 0000004A         
+   88 0000004A         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   48 00000006         ; Timer update
-   49 00000006         ; void* signal_handler( int signum, void* handler )
-   50 00000006                 EXPORT           _signal_handler
-   51 00000006         _signal_handler
-   52 00000006         ;; Implement by yourself
-   53 00000006         
-   54 00000006 46F7            MOV              pc, lr      ; return to Reset_H
+   89 0000004A         ; Timer update
+   90 0000004A         ; void* signal_handler( int signum, void* handler )
+   91 0000004A                 EXPORT           _signal_handler
+   92 0000004A         _signal_handler
+   93 0000004A         ;; Implement by yourself
+   94 0000004A         
+   95 0000004A 46F7            MOV              pc, lr      ; return to Reset_H
                                                             andler
-   55 00000008         
-   56 00000008                 END
+   96 0000004C         
+   97 0000004C                 END
+              E000E010 
+              E000E014 
+              20007B80 
+              E000E018 
+              20007B84 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
 interwork --depend=.\objects\timer.d -o.\objects\timer.o -I.\RTE\_Target_1 -IC:
 \Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\Us
@@ -130,13 +241,13 @@ Symbol: .text
    Uses
       None
 Comment: .text unused
-_signal_handler 00000006
+_signal_handler 0000004A
 
 Symbol: _signal_handler
    Definitions
-      At line 51 in file timer.s
+      At line 92 in file timer.s
    Uses
-      At line 50 in file timer.s
+      At line 91 in file timer.s
 Comment: _signal_handler used once
 _timer_init 00000000
 
@@ -146,23 +257,31 @@ Symbol: _timer_init
    Uses
       At line 23 in file timer.s
 Comment: _timer_init used once
-_timer_start 00000002
+_timer_start 00000012
 
 Symbol: _timer_start
    Definitions
-      At line 33 in file timer.s
+      At line 41 in file timer.s
    Uses
-      At line 32 in file timer.s
+      At line 40 in file timer.s
 Comment: _timer_start used once
-_timer_update 00000004
+_timer_update 0000002C
 
 Symbol: _timer_update
    Definitions
-      At line 42 in file timer.s
+      At line 65 in file timer.s
    Uses
-      At line 41 in file timer.s
+      At line 64 in file timer.s
 Comment: _timer_update used once
-5 symbols
+_timer_update_done 00000048
+
+Symbol: _timer_update_done
+   Definitions
+      At line 85 in file timer.s
+   Uses
+      At line 72 in file timer.s
+Comment: _timer_update_done used once
+6 symbols
 
 
 
@@ -256,4 +375,4 @@ Symbol: USR_HANDLER
       None
 Comment: USR_HANDLER unused
 10 symbols
-350 symbols in table
+353 symbols in table

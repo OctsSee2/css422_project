@@ -91,40 +91,49 @@ ARM Macro Assembler    Page 2
    66 0000000C         _alarm
    67 0000000C         ; save registers
    68 0000000C         ; set the system call # to R7
-   69 0000000C DF00            SVC              #0x0
-   70 0000000E         ; resume registers 
-   71 0000000E 46F7            MOV              pc, lr
-   72 00000010         
-   73 00000010         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   69 0000000C B580            PUSH             {R7, LR}
+   70 0000000E F04F 0701       MOV              R7, #1
+   71 00000012 DF00            SVC              #0x0
+   72 00000014 E8BD 4080       POP              {R7, LR}
+   73 00000018         ; resume registers 
+   74 00000018 46F7            MOV              pc, lr
+   75 0000001A         
+   76 0000001A         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   74 00000010         ; void* _signal( int signum, void *handler )
-   75 00000010         ; Parameters
-   76 00000010         ;   signum - a signal number (assumed to be 14 = SIGALRM
+   77 0000001A         ; void* _signal( int signum, void *handler )
+   78 0000001A         ; Parameters
+   79 0000001A         ;   signum - a signal number (assumed to be 14 = SIGALRM
                        )
-   77 00000010         ;   handler - a pointer to a user-level signal handling 
+   80 0000001A         ;   handler - a pointer to a user-level signal handling 
                        function
-   78 00000010         ; Return value
-   79 00000010         ;   void*   - a pointer to the user-level signal handlin
+   81 0000001A         ; Return value
+   82 0000001A         ;   void*   - a pointer to the user-level signal handlin
                        g function previously handled
-   80 00000010         ;             (the same as the 2nd parameter in this pro
+   83 0000001A         ;             (the same as the 2nd parameter in this pro
                        ject)
-   81 00000010                 EXPORT           _signal
-   82 00000010         _signal
-   83 00000010         ; save registers
-   84 00000010         ; set the system call # to R7
-   85 00000010 DF00            SVC              #0x0
-   86 00000012         ; resume registers
-   87 00000012 46F7            MOV              pc, lr
-   88 00000014         
-   89 00000014         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   84 0000001A                 EXPORT           _signal
+   85 0000001A         _signal
+   86 0000001A         ; save registers
+   87 0000001A         ; set the system call # to R7
+   88 0000001A DF00            SVC              #0x0
+   89 0000001C         ; resume registers
+   90 0000001C 46F7            MOV              pc, lr
+   91 0000001E         
+   92 0000001E         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   90 00000014                 END
+   93 0000001E                 END
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
 interwork --depend=.\objects\stdlib.d -o.\objects\stdlib.o -I.\RTE\_Target_1 -I
 C:\Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\
 Users\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 
 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefin
 e="TM4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\stdlib.ls
+
+
+
+ARM Macro Assembler    Page 3 
+
+
 t stdlib.s
 
 
@@ -172,13 +181,13 @@ Symbol: _malloc
    Uses
       At line 35 in file stdlib.s
 Comment: _malloc used once
-_signal 00000010
+_signal 0000001A
 
 Symbol: _signal
    Definitions
-      At line 82 in file stdlib.s
+      At line 85 in file stdlib.s
    Uses
-      At line 81 in file stdlib.s
+      At line 84 in file stdlib.s
 Comment: _signal used once
 _strncpy 00000002
 
