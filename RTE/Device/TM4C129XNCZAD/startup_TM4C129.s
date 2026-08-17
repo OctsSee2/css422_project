@@ -205,20 +205,34 @@ __Vectors_Size  EQU     __Vectors_End - __Vectors
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
                 IMPORT  SystemInit
-        	IMPORT  __main
+				IMPORT  __main
+				IMPORT	_syscall_table_init
+				IMPORT	_timer_init
+				IMPORT	_heap_init
 	
-		; Store __initial_sp into MSP (Step 1 toward Midpoint Report)
-
-		ISB     ; Let's leave as is from the original.
+				; Store __initial_sp into MSP (Step 1 toward Midpoint Report)
+				LDR		R0, =__initial_sp
+				MSR		MSP, R0				; write R0's value (__initial_sp) into the MSP
+				
+				ISB     ; Let's leave as is from the original.
                 LDR     R0, =SystemInit
-        	BLX     R0
+				BLX     R0
 
-		; Initialize the system call table (Step 2)
-		; Initialize the heap space (Step 2)
-		; Initialize the SysTick timer (Step 2)
-	
-		; Store __initial_user_sp into PSP (Step 1 toward Midpoint Report)
-		; Change CPU mode into unprivileged thread mode using PSP
+				; Initialize the system call table (Step 2)
+				BL		_syscall_table_init
+				; Initialize the heap space (Step 2)
+				BL		_heap_init
+				; Initialize the SysTick timer (Step 2)
+				BL		_timer_init
+
+				; Store __initial_user_sp into PSP (Step 1 toward Midpoint Report)
+				LDR		R0, =__initial_user_sp
+				MSR		PSP, R0
+
+				; Change CPU mode into unprivileged thread mode using PSP
+				MOV		R0, #0x3
+				MSR		CONTROL, R0
+				ISB		; this does something maybe
 
                 LDR     R0, =__main
                 BX      R0
