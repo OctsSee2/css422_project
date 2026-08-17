@@ -289,11 +289,15 @@ PendSV_Handler\
 SysTick_Handler\
                 PROC		; (Step 2)
 				EXPORT  SysTick_Handler           [WEAK]
-		; Save registers
-		; Invoke _timer_update
-		; Retrieve registers
-		; Change from MSP to PSP
-		; Go back to the user program
+				IMPORT	_timer_update
+				; Save registers
+				PUSH	{R4, LR}		; R4 is a dummy register to maintain alignment
+				; Invoke _timer_update
+				BL		_timer_update
+				; Retrieve registers
+				POP		{R4, LR}
+				; Change from MSP to PSP (doesn't this happen automatically ?)
+				; Go back to the user program
                 B       .
                 ENDP
 
