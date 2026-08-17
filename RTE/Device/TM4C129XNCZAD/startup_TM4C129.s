@@ -265,11 +265,15 @@ UsageFault_Handler\
                 B       .
                 ENDP
 SVC_Handler     PROC 		; (Step 2)
-        	EXPORT  SVC_Handler               [WEAK]
-		; Save registers 
-		; Invoke _syscall_table_ump
-		; Retrieve registers
-		; Go back to stdlib.s
+				EXPORT  SVC_Handler               [WEAK]
+				IMPORT	_syscall_table_jump
+				; Save registers 
+				PUSH	{R4, LR}		; R4 is a dummy register to maintain alignment
+				; Invoke _syscall_table_jump
+				BL		_syscall_table_jump
+				; Retrieve registers
+				POP		{R4, LR}
+				; Go back to stdlib.s
                 B       .
                 ENDP
 DebugMon_Handler\
@@ -284,7 +288,7 @@ PendSV_Handler\
                 ENDP
 SysTick_Handler\
                 PROC		; (Step 2)
-        	EXPORT  SysTick_Handler           [WEAK]
+				EXPORT  SysTick_Handler           [WEAK]
 		; Save registers
 		; Invoke _timer_update
 		; Retrieve registers
