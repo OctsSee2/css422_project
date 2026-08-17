@@ -274,7 +274,7 @@ SVC_Handler     PROC 		; (Step 2)
 				; Retrieve registers
 				POP		{R4, LR}
 				; Go back to stdlib.s
-                B       .
+                BX		LR
                 ENDP
 DebugMon_Handler\
                 PROC
@@ -298,7 +298,7 @@ SysTick_Handler\
 				POP		{R4, LR}
 				; Change from MSP to PSP (doesn't this happen automatically ?)
 				; Go back to the user program
-                B       .
+                BX		LR
                 ENDP
 
 GPIOA_Handler\
