@@ -29,7 +29,16 @@ _syscall_table_init
 		LDR		R1, =_signal_handler	; write memory address to `_signal_handler` into R1
 		STR		R1, [R0]
 
-		; TODO: add the others
+		; malloc
+		LDR		R0, =0x2007b0c			; write intended system call memory address for `malloc()` into R0
+		LDR		R1, =_signal_handler	; write memory address to `_signal_handler` into R1
+		STR		R1, [R0]
+
+		; free
+		LDR		R0, =0x2007b10			; write intended system call memory address for `free()` into R0
+		LDR		R1, =_signal_handler	; write memory address to `_signal_handler` into R1
+		STR		R1, [R0]
+
 		MOV		pc, lr
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
