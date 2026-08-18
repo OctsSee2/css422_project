@@ -49,91 +49,97 @@ ARM Macro Assembler    Page 1
    35 00000004                 EXPORT           _malloc
    36 00000004         _malloc
    37 00000004         ; save registers
-   38 00000004         ; set the system call # to R7
-   39 00000004 DF00            SVC              #0x0
-   40 00000006         ; resume registers
-   41 00000006 46F7            MOV              pc, lr
-   42 00000008         
-   43 00000008         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   38 00000004 B580            PUSH             {R7, LR}
+   39 00000006         ; set the system call # to R7
+   40 00000006 F04F 0703       MOV              R7, #0x3
+   41 0000000A DF00            SVC              #0x0
+   42 0000000C         ; resume registers 
+   43 0000000C E8BD 4080       POP              {R7, LR}
+   44 00000010 46F7            MOV              pc, lr
+   45 00000012         
+   46 00000012         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   44 00000008         ; void _free( void* addr )
-   45 00000008         ; Parameters
-   46 00000008         ; size - the address of a space to deallocate
-   47 00000008         ; Return value
-   48 00000008         ;    none
-   49 00000008                 EXPORT           _free
-   50 00000008         _free
+   47 00000012         ; void _free( void* addr )
+   48 00000012         ; Parameters
+   49 00000012         ; size - the address of a space to deallocate
+   50 00000012         ; Return value
 
 
 
 ARM Macro Assembler    Page 2 
 
 
-   51 00000008         ; save registers
-   52 00000008         ; set the system call # to R7
-   53 00000008 DF00            SVC              #0x0
-   54 0000000A         ; resume registers
-   55 0000000A 46F7            MOV              pc, lr
-   56 0000000C         
-   57 0000000C         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   51 00000012         ;    none
+   52 00000012                 EXPORT           _free
+   53 00000012         _free
+   54 00000012         ; save registers
+   55 00000012 B580            PUSH             {R7, LR}
+   56 00000014         ; set the system call # to R7
+   57 00000014 F04F 0704       MOV              R7, #0x4
+   58 00000018 DF00            SVC              #0x0
+   59 0000001A         ; resume registers 
+   60 0000001A E8BD 4080       POP              {R7, LR}
+   61 0000001E 46F7            MOV              pc, lr
+   62 00000020         
+   63 00000020         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   58 0000000C         ; unsigned int _alarm( unsigned int seconds )
-   59 0000000C         ; Parameters
-   60 0000000C         ;   seconds - seconds when a SIGALRM signal should be de
+   64 00000020         ; unsigned int _alarm( unsigned int seconds )
+   65 00000020         ; Parameters
+   66 00000020         ;   seconds - seconds when a SIGALRM signal should be de
                        livered to the calling program 
-   61 0000000C         ; Return value
-   62 0000000C         ;   unsigned int - the number of seconds remaining until
+   67 00000020         ; Return value
+   68 00000020         ;   unsigned int - the number of seconds remaining until
                         any previously scheduled alarm
-   63 0000000C         ;                  was due to be delivered, or zero if t
+   69 00000020         ;                  was due to be delivered, or zero if t
                        here was no previously schedul-
-   64 0000000C         ;                  ed alarm. 
-   65 0000000C                 EXPORT           _alarm
-   66 0000000C         _alarm
-   67 0000000C         ; save registers
-   68 0000000C B580            PUSH             {R7, LR}
-   69 0000000E         ; set the system call # to R7
-   70 0000000E F04F 0701       MOV              R7, #0x1
-   71 00000012 DF00            SVC              #0x0
-   72 00000014         ; resume registers 
-   73 00000014 E8BD 4080       POP              {R7, LR}
-   74 00000018 46F7            MOV              pc, lr
-   75 0000001A         
-   76 0000001A         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   70 00000020         ;                  ed alarm. 
+   71 00000020                 EXPORT           _alarm
+   72 00000020         _alarm
+   73 00000020         ; save registers
+   74 00000020 B580            PUSH             {R7, LR}
+   75 00000022         ; set the system call # to R7
+   76 00000022 F04F 0701       MOV              R7, #0x1
+   77 00000026 DF00            SVC              #0x0
+   78 00000028         ; resume registers 
+   79 00000028 E8BD 4080       POP              {R7, LR}
+   80 0000002C 46F7            MOV              pc, lr
+   81 0000002E         
+   82 0000002E         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   77 0000001A         ; void* _signal( int signum, void *handler )
-   78 0000001A         ; Parameters
-   79 0000001A         ;   signum - a signal number (assumed to be 14 = SIGALRM
+   83 0000002E         ; void* _signal( int signum, void *handler )
+   84 0000002E         ; Parameters
+   85 0000002E         ;   signum - a signal number (assumed to be 14 = SIGALRM
                        )
-   80 0000001A         ;   handler - a pointer to a user-level signal handling 
+   86 0000002E         ;   handler - a pointer to a user-level signal handling 
                        function
-   81 0000001A         ; Return value
-   82 0000001A         ;   void*   - a pointer to the user-level signal handlin
+   87 0000002E         ; Return value
+   88 0000002E         ;   void*   - a pointer to the user-level signal handlin
                        g function previously handled
-   83 0000001A         ;             (the same as the 2nd parameter in this pro
+   89 0000002E         ;             (the same as the 2nd parameter in this pro
                        ject)
-   84 0000001A                 EXPORT           _signal
-   85 0000001A         _signal
-   86 0000001A         ; save registers
-   87 0000001A B580            PUSH             {R7, LR}
-   88 0000001C         ; set the system call # to R7
-   89 0000001C F04F 0702       MOV              R7, #0x2
-   90 00000020 DF00            SVC              #0x0
-   91 00000022         ; resume registers
-   92 00000022 E8BD 4080       POP              {R7, LR}
-   93 00000026 46F7            MOV              pc, lr
-   94 00000028         
-   95 00000028         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   96 00000028                 END
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
-interwork --depend=.\objects\stdlib.d -o.\objects\stdlib.o -I.\RTE\_Target_1 -I
-C:\Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\
+   90 0000002E                 EXPORT           _signal
+   91 0000002E         _signal
+   92 0000002E         ; save registers
+   93 0000002E B580            PUSH             {R7, LR}
+   94 00000030         ; set the system call # to R7
+   95 00000030 F04F 0702       MOV              R7, #0x2
+   96 00000034 DF00            SVC              #0x0
+   97 00000036         ; resume registers
+   98 00000036 E8BD 4080       POP              {R7, LR}
+   99 0000003A 46F7            MOV              pc, lr
+  100 0000003C         
 
 
 
 ARM Macro Assembler    Page 3 
 
 
+  101 0000003C         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  102 0000003C                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp.sp --apcs=
+interwork --depend=.\objects\stdlib.d -o.\objects\stdlib.o -I.\RTE\_Target_1 -I
+C:\Users\llgoj\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include -IC:\
 Users\llgoj\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129 
 --predefine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 543" --predefin
 e="TM4C129XNCZAD SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\stdlib.ls
@@ -152,13 +158,13 @@ Symbol: .text
    Uses
       None
 Comment: .text unused
-_alarm 0000000C
+_alarm 00000020
 
 Symbol: _alarm
    Definitions
-      At line 66 in file stdlib.s
+      At line 72 in file stdlib.s
    Uses
-      At line 65 in file stdlib.s
+      At line 71 in file stdlib.s
 Comment: _alarm used once
 _bzero 00000000
 
@@ -168,13 +174,13 @@ Symbol: _bzero
    Uses
       At line 11 in file stdlib.s
 Comment: _bzero used once
-_free 00000008
+_free 00000012
 
 Symbol: _free
    Definitions
-      At line 50 in file stdlib.s
+      At line 53 in file stdlib.s
    Uses
-      At line 49 in file stdlib.s
+      At line 52 in file stdlib.s
 Comment: _free used once
 _malloc 00000004
 
@@ -184,13 +190,13 @@ Symbol: _malloc
    Uses
       At line 35 in file stdlib.s
 Comment: _malloc used once
-_signal 0000001A
+_signal 0000002E
 
 Symbol: _signal
    Definitions
-      At line 85 in file stdlib.s
+      At line 91 in file stdlib.s
    Uses
-      At line 84 in file stdlib.s
+      At line 90 in file stdlib.s
 Comment: _signal used once
 _strncpy 00000002
 
