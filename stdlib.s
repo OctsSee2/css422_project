@@ -53,7 +53,7 @@ strncpy_loop
 		; if not, loop
 		B 		strncpy_loop
 strncpy_done
-		; restore original dest pointer
+		; restore original dest pointer that was saved on the stack
 		POP		{R0}
 		; redirect program counter to caller
 		MOV		pc, lr
