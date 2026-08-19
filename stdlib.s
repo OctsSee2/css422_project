@@ -22,27 +22,47 @@ bzero_loop
 		SUBS	R1, R1, #1
 		BNE		bzero_loop
 bzero_done
+		; redirect program counter to caller
 		MOV		pc, lr
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; char* _strncpy( char* dest, char* src, int size )
 ; Parameters
-;   	dest 	- pointer to the buffer to copy to
-;	src	- pointer to the zero-terminated string to copy from
+;   dest 	- pointer to the buffer to copy to
+;	src		- pointer to the zero-terminated string to copy from
 ;	size	- a total of n bytes
 ; Return value
 ;   dest
 		EXPORT	_strncpy
 _strncpy
-		; implement your complete logic, including stack operations
+		; save original dest pointer on stack
+		PUSH	{R0}
+strncpy_loop
+		; return early if size == 0
+		CMP		R2, #0
+		BEQ		strncpy_done
+		; load byte from pointed src location, iterate src pointer
+		LDRB	R3, [R1], #1
+		; store byte to pointed dest location, iterate dest pointer
+		STRB	R3, [R0], #1
+		; size--
+		SUBS	R2, R2, #1
+		; return early if that was the final byte to copy
+		CMP		R3, #0
+		BEQ		strncpy_done
+		; if not, loop
+		B 		strncpy_loop
+strncpy_done
+		; restore original dest pointer
+		POP		{R0}
+		; redirect program counter to caller
 		MOV		pc, lr
-		
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; void* _malloc( int size )
 ; Parameters
 ;	size	- #bytes to allocate
 ; Return value
-;   	void*	a pointer to the allocated space
+;   void*	- a pointer to the allocated space
 		EXPORT	_malloc
 _malloc
 		; save registers
@@ -59,7 +79,7 @@ _malloc
 ; Parameters
 ;	size	- the address of a space to deallocate
 ; Return value
-;   	none
+;   none
 		EXPORT	_free
 _free
 		; save registers
