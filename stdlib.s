@@ -10,8 +10,19 @@
 ;   none
 		EXPORT	_bzero
 _bzero
-		; implement your complete logic, including stack operations
-		MOV		pc, lr	
+		; return early if n == 0
+		CMP		R1, #0
+		BEQ		bzero_done
+		; if n != 0, prep the 0 byte to write
+		MOV		R2, #0
+bzero_loop
+		; store zero, advance pointer by 1
+		STRB	R2, [R0], #1
+		; n--
+		SUBS	R1, R1, #1
+		BNE		bzero_loop
+bzero_done
+		MOV		pc, lr
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; char* _strncpy( char* dest, char* src, int size )
