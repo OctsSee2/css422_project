@@ -16,7 +16,7 @@ _bzero
 		; if n != 0, prep the 0 byte to write
 		MOV		R2, #0
 bzero_loop
-		; store zero, advance pointer by 1
+		; store 0 byte, advance pointer by 1
 		STRB	R2, [R0], #1
 		; n--
 		SUBS	R1, R1, #1
