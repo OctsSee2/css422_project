@@ -55,19 +55,19 @@ int main( ) {
 	_alarm( 2 );
 	
 	// also `_malloc` and `_free`
-	//while ( *alarmed != 2 ) {
-	//	void* mem9 = _malloc( 4 );	
-	//	_free( mem9 );		
-	//}
+	while ( *alarmed != 2 ) {
+		void* mem9 = _malloc( 4 );	
+		_free( mem9 );		
+	}
 	
 	// again `_signal` and `_alarm`
 	_signal( SIG_ALRM, sig_handler2 );
 	_alarm( 3 );
 
 	// also `_malloc` and `_free`
-	//while ( *alarmed != 3 ) {
-	//	void* mem9 = _malloc( 4 );	
-	//	_free( mem9 );
-	//}
+	while ( *alarmed != 3 ) {
+		void* mem9 = _malloc( 4 );	
+		_free( mem9 );
+	}
 	return 0;
 }
