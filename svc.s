@@ -7,16 +7,15 @@ SYSTEMCALLTBL	EQU		0x20007B00 ; originally 0x20007500
 SYS_EXIT		EQU		0x0		; address 20007B00
 SYS_ALARM		EQU		0x1		; address 20007B04
 SYS_SIGNAL		EQU		0x2		; address 20007B08
-SYS_MEMCPY		EQU		0x3		; address 20007B0C
-SYS_MALLOC		EQU		0x4		; address 20007B10
-SYS_FREE		EQU		0x5		; address 20007B14
+SYS_MALLOC		EQU		0x3		; address 20007B0C
+SYS_FREE		EQU		0x4		; address 20007B10
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 		IMPORT _timer_start
 		IMPORT _signal_handler
 
-; System Call Table Initialization
+; System Call Table Initialisation
 		EXPORT	_syscall_table_init
 _syscall_table_init
 		; alarm
@@ -48,11 +47,11 @@ _syscall_table_jump
 		; each address is separated by 4 bytes + syscall number is stored in R7 
 		; 	-> use `LSL <some-register>, R7, #0x2` to translate it into the 
 		;      proper jump offset from the jump table start memory address (at 0x20007b00)
-		LSL		R0, R7, #0x2			; calculate the jump offset using R7 * 4 and store it into R0
-		LDR		R1, =0x20007b00			; write start memory address for the jump table into R1
-		ADD		R1, R1, R0				; increment R1's value by the jump offset amt
+		LSL		R2, R7, #0x2			; calculate the jump offset using R7 * 4 and store it into R2
+		LDR		R3, =0x20007b00			; write start memory address for the jump table into R3
+		ADD		R3, R3, R2				; increment R3's value by the jump offset amt
 		
-		LDR		R2, [R1]				; write the value stored at the offsetted memory address (should be `alarm()`) into R2
+		LDR		R2, [R3]				; write the value stored at the offsetted memory address (should be `alarm()`) into R2
 		CMP		R2, #0x0
 		BXNE	R2						; branch to the function at that memory address if its not zero (don't save return address)
 
